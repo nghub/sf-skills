@@ -1,3 +1,12 @@
+## [1.9.1](https://github.com/forcedotcom/sf-skills/compare/1.9.0...1.9.1) (2026-05-19)
+
+
+### Reverts
+
+* Revert "sync: #136 (feat: remove related-skills field from generating-lightning-app)" ([6704511](https://github.com/forcedotcom/sf-skills/commit/6704511a67d4cbb51863d3f6f1dfac1af3b9c99f)), closes [#136](https://github.com/forcedotcom/sf-skills/issues/136)
+
+
+
 # [1.9.0](https://github.com/forcedotcom/sf-skills/compare/1.8.0...1.9.0) (2026-05-14)
 
 
