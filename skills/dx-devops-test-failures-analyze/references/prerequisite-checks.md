@@ -1,22 +1,16 @@
----
-name: checking-devops-prerequisites
-description: "Validate the environment before any DevOps Center pipeline testing action: confirms an authenticated Salesforce org, the Agentforce DX plugin, an authenticated DevOps Center org, and an identified pipeline (and optionally a pipeline stage). Use this FIRST, internally, from any DevOps testing skill (running a test suite, polling results, syncing tests, configuring or retriggering a quality gate, assigning/mapping suites, creating fix work items, recommending tests, explaining coverage, analyzing failures). TRIGGER when another DevOps testing skill needs to confirm org/pipeline context before a query or system call. DO NOT TRIGGER for non-DevOps-Center work."
-metadata:
-  version: "1.0"
-  minApiVersion: "67.0"
----
+# Prerequisite Checks — Shared DevOps Center Gate
 
-# Checking DevOps Prerequisites
-
-Shared gate for every DevOps Center testing skill. Run these checks **before** any query or system call. On any failure, surface the plain-language message and stop until the user resolves it — never proceed to a write with an unverified environment.
+Shared environment gate for every DevOps Center testing skill. Run these checks **before** any query or system call. On any failure, surface the plain-language message and stop until the user resolves it — never proceed to a write with an unverified environment.
 
 > **API version:** All DevOps testing system calls target Salesforce API **v67.0** (minimum required).
 
 **Important:** All DevOps Center data (pipelines, stages, test suites, executions) lives in the Salesforce org — NOT in the local repository. Never search the filesystem for pipeline configuration. Always query the org using `sf data query` or `sf api request rest`.
 
-## How other skills use this
+**Object model — use the STANDARD objects, never the `sf_devops__` managed package:** DevOps Center testing data lives in standard platform objects — `DevopsPipeline`, `DevopsPipelineStage`, `DevopsPipelineStageTrigger`, `DevopsTestSuite`, `DevopsTestSuiteStage`, `DevopsTestSuiteExecution`, `DevopsProject`, `WorkItem`. Do **NOT** query the legacy managed-package objects (`sf_devops__Pipeline__c`, `sf_devops__Pipeline_Stage__c`, etc.) and do **NOT** gate on a `PackageLicense` / namespace check for `sf_devops`. "DevOps Center installed" is determined **solely** by whether `DevopsPipeline` is queryable and returns records (Prerequisite 4) — never by the presence of the `sf_devops__` namespace. If a `sf_devops__*` object is missing, that is expected and is NOT evidence that DevOps Center is uninstalled.
 
-Every DevOps testing skill loads this skill first and runs Prerequisites 1–4 in order. Prerequisite 5 (stage) is run **only** when the calling skill operates on a specific pipeline stage (running/retriggering a suite, syncing, configuring a gate, mapping a suite). The calling skill passes back the resolved `doce-org-alias`, `pipelineId`, and (when applicable) `stageId` to use in its own commands.
+## How skills use this
+
+Run Prerequisites 1–4 in order. Prerequisite 5 (stage) is run **only** when the operation targets a specific pipeline stage (configuring a gate, running/retriggering a suite, mapping a suite). Carry forward the resolved `doce-org-alias`, `pipelineId`, and (when applicable) `stageId`.
 
 Resolve the **DevOps Center org alias** without asking the user unless genuinely ambiguous:
 1. If the user named an org alias in their message, use it.
@@ -94,7 +88,7 @@ sf data query \
 
 ## Prerequisite 5 — Pipeline stage identified (conditional)
 
-Run **only** when the calling skill operates on a specific stage.
+Run **only** when the operation targets a specific stage (e.g. configuring a quality gate).
 
 If the user's message already names a stage (e.g. "Integration", "Staging", "Production"), use that name directly — do NOT ask again. Look up its Id:
 
@@ -115,27 +109,4 @@ sf data query \
 Then ask: "Which pipeline stage are we working with?" — do NOT ask for an org alias; stages are resolved by name from the pipeline.
 
 - **Pass:** stage Id and Name confirmed
-- **Deferred:** not required until a calling skill needs it
-
----
-
-## Error Handling
-
-| Error condition | Response |
-|---|---|
-| `sf org list` fails entirely | "Could not reach the Salesforce CLI. Make sure `sf` is installed and on your PATH." |
-| `sf org display` returns auth error | Surface plain-language re-auth instructions. Do not expose the raw error. |
-| `DevopsPipeline` query fails with 5xx | "The DevOps Center org is returning a server error. Try again in a few minutes." |
-| Any check throws unexpectedly | "Something went wrong checking prerequisites. Error: [plain summary]. Let's try again — or resolve it manually and let me know when ready." |
-
-Never expose raw API errors, stack traces, or JSON error payloads to the user.
-
-## Gotchas
-
-| Issue | Resolution |
-|---|---|
-| `DevopsPipeline` query returns empty | DevOps Center not installed on the target org, or wrong org alias — ask the user to verify |
-| `DevopsWorkItem` sObject not supported | Use `WorkItem` (no namespace) — the correct API name for this org version |
-| Review trigger is pipeline-level, not stage-level | Query `DevopsPipelineStageTrigger` where `TriggerType = 'Review'` and `RelatedRecordId = <pipelineId>` |
-| Connect API `testSuites` returns empty with `?stageId=` | Use `?triggerId=<reviewTriggerId>` — `stageId` only works for stage-level triggers |
-| `sf plugins` doesn't match `agentforce` | The installed plugin is `@salesforce/plugin-agent` — match on `plugin-agent` too |
+- **Deferred:** not required until the operation needs it

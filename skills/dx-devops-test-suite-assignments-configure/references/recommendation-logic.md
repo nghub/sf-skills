@@ -1,28 +1,18 @@
----
-name: recommending-devops-tests
-description: "Analyzes a commit diff and available DevOps Center test suite metadata to recommend the most relevant existing test suites, then flags coverage gaps where no suite covers a new method — via pure reasoning, no system calls beyond the prerequisite queries. Use this skill when a developer wants to know which test suites to run for a specific commit or diff, what tests cover their changes, or wants suite recommendations at commit time. TRIGGER when: the user asks which test suites to run for a commit/diff, asks what tests cover their changes, or asks for suite recommendations before promoting. DO NOT TRIGGER when: authoring new tests (use platform-apex-test-generate) or running sf apex run test directly (use platform-apex-test-run)."
-metadata:
-  version: "1.0"
-  minApiVersion: "67.0"
----
+# Mode A — Recommend Suites for a Commit/Diff
 
-# Recommending DevOps Tests
-
-**Type:** Pure reasoning — no system calls beyond the prerequisite data-fetch queries documented below.
+**Type:** Pure reasoning — no system calls beyond the prerequisite data-fetch queries documented below. No writes.
 
 **What it does:** Analyzes the commit diff and available suite metadata to recommend the most relevant existing test suites assigned to the Review pipeline stage. Flags coverage gaps where no suite covers a new method.
 
----
-
 ## Prerequisites
 
-Load and follow the `checking-devops-prerequisites` skill first (Prerequisites 1–4). This skill needs a confirmed DevOps Center org alias and pipeline Id before it can proceed.
+Run Prerequisites 1–4 (`references/prerequisite-checks.md`). A confirmed DevOps Center org alias and `pipelineId` are required before proceeding. No stage prompt — recommendation reads the pipeline-level Review trigger.
 
 ---
 
 ## Step 1 — Fetch suite metadata
 
-Before reasoning can begin, fetch the test suite metadata assigned to the Review pipeline stage. This requires two queries.
+Two queries are required before reasoning.
 
 **1a — Find the Review pipeline stage trigger:**
 
@@ -48,17 +38,13 @@ Each row provides: `TestSuiteId`, `TestSuite.Name`, `IsQualityGateEnabled`, and 
 
 > Note: Do NOT use the beta `/connect/devops/.../testSuites` endpoint — it returns empty results. Query `DevopsTestSuiteStage` directly as shown above.
 
-Never expose raw API errors or raw JSON to the user. If a query fails, report the problem in plain language and stop.
-
-The commit diff comes from the user or surrounding context.
+Never expose raw API errors or raw JSON to the user. If a query fails, report the problem in plain language and stop. The commit diff comes from the user or surrounding context.
 
 ---
 
 ## Reasoning steps
 
 ### 1 — Classify the diff by change type
-
-Parse the diff file extensions and paths to determine what types of changes were made:
 
 | File pattern | Change type |
 |---|---|
@@ -71,7 +57,7 @@ A single commit may contain multiple change types. Identify all of them.
 
 ### 2 — Map change types to test providers
 
-For each change type identified, match against the `testProviderName` of the fetched suites:
+For each change type, match against the `testProviderName` of the fetched suites:
 
 | Change type | Match suites whose `testProviderName` contains |
 |---|---|
@@ -81,7 +67,7 @@ For each change type identified, match against the `testProviderName` of the fet
 | LWC / JavaScript | `LWC` or `JavaScript` |
 | Code Analyzer (any) | `Code Analyzer` — then sub-filter by suite name convention: `recommended` → Apex/general rules (suggest for Apex and Java changes), `html` → suggest for HTML/LWC template changes, `css` → suggest for CSS changes. If no suite name matches the convention, suggest all Code Analyzer suites and note the ambiguity. |
 
-Only recommend suites whose provider matches at least one change type in the diff. Suites from non-matching providers are excluded from the recommendation.
+Only recommend suites whose provider matches at least one change type in the diff. Suites from non-matching providers are excluded.
 
 ### 3 — Rank matched suites
 
@@ -129,9 +115,7 @@ Coverage gaps (new methods — manual authoring required):
 
 Only recommend existing suites. Never suggest generating new tests. If gaps exist, direct the developer to author tests manually and explain exactly which methods need coverage.
 
----
+## How recommendations feed assignment
 
-## Related skills
-
-- To analyze failures from a run, use `analyzing-test-failures`.
-- To actually execute a recommended suite, use `running-devops-test-suite`.
+- A relevant suite that exists but is **not assigned** to the stage → use **Mode B/C** (`references/suite-assignment-modes.md`) to assign it.
+- To actually execute a recommended suite, use **`dx-devops-test-suite-run`**.

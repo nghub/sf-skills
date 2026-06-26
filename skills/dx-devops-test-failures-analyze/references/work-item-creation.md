@@ -1,14 +1,10 @@
----
-name: creating-fix-work-item
-description: "Creates a DevOps Center WorkItem to track a fix for a test failure or Code Analyzer violation. Before creating anything, it shows a subject/assignee/project preview and requires explicit confirmation. Use this skill when you want to create a fix work item, track a remediation task, or assign a test or analysis failure to a developer. TRIGGER when: the user wants to create a fix work item, log a remediation, or assign a failure to a developer for resolution. DO NOT TRIGGER when: writing the fix code itself (use platform-apex-generate)."
-metadata:
-  version: "1.0"
-  minApiVersion: "67.0"
----
+# Part 3 — Create a Fix Work Item
+
+Creates a DevOps Center `WorkItem` to track a fix for a test failure or Code Analyzer violation. This is an **optional write**, triggered only when the user asks to create a fix work item, log a remediation, or assign a failure to a developer.
 
 ## Prerequisites
 
-Load `checking-devops-prerequisites` first — Prerequisites 1–4. You need `doce-org-alias`, the `DevopsProjectId` to file under, and an `OwnerId` (assignee). If no DevopsProject exists, surface that the work item cannot be created until a project exists.
+Run Prerequisites 1–4 (`references/prerequisite-checks.md`). You need `doce-org-alias`, a `DevopsProjectId` to file under, and an `OwnerId` (assignee). If no `DevopsProject` exists, surface that the work item cannot be created until a project exists — do NOT fabricate a project or work item.
 
 ## Inputs required before creating
 
@@ -16,7 +12,7 @@ Load `checking-devops-prerequisites` first — Prerequisites 1–4. You need `do
 |---|---|
 | `DevopsProjectId` | From the pipeline's associated project — query `DevopsProject WHERE Name = '<projectName>'` on the doce org if not already known |
 | `Subject` | Derived from failure analysis — e.g. "Fix: Missing code-analyzer-v5.yml workflow in blitz-10-06 repository" |
-| `OwnerId` | User ID of the developer to assign to — query `SELECT Id, Name FROM User WHERE Username = '<username>'` on the doce org if not known. Ask the user if the username is unknown. |
+| `OwnerId` | User ID of the developer to assign to — query `SELECT Id, Name FROM User WHERE Username = '<username>'` on the doce org if not known. Default to the requesting user when no assignee is specified; ask only if the username is unknown and no default applies. |
 | `doce-org-alias` | Established in Prerequisites |
 
 ## Confirmation gate
@@ -46,7 +42,7 @@ sf data create record \
 
 ## On success
 
-Parse the returned `id` from the result and confirm:
+Parse the returned `id` and confirm:
 
 > "Fix work item created (`<id>`): `<subject>`. Assigned to `<assigneeName>` in the `<projectName>` project."
 
@@ -61,6 +57,6 @@ Never expose raw API error messages. Map errors to plain-language responses:
 | `INSUFFICIENT_ACCESS` | "Your user doesn't have permission to create work items in this project." |
 | Any other error | "The work item could not be created. Error: `<plain summary>`. Try again or create it manually in DevOps Center." |
 
-## Related skills
+## No-project case
 
-- `analyzing-test-failures` — provides the failure analysis and improvement suggestions that motivate creating a fix work item
+If the `DevopsProject` query returns 0 records, report clearly that no DevOps Center project exists and the work item cannot be created until one is set up. Do NOT fabricate a project name/ID, do NOT proceed to the confirmation gate or the create command.
