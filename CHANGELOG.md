@@ -1,3 +1,12 @@
+# [1.24.0](https://github.com/forcedotcom/sf-skills/compare/1.23.0...1.24.0) (2026-06-26)
+
+
+### Features
+
+* Rename datacloud skills to domain-first convention @W-23195294@ ([64a9fcb](https://github.com/forcedotcom/sf-skills/commit/64a9fcb6ee12e64e242a88155d149906a43fc5c3))
+
+
+
 # [1.23.0](https://github.com/forcedotcom/sf-skills/compare/1.22.0...1.23.0) (2026-06-26)
 
 
