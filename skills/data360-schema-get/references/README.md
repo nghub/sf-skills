@@ -1,4 +1,4 @@
-# getting-datacloud-schema Skill
+# data360-schema-get Skill
 
 ## Overview
 
@@ -7,25 +7,25 @@ A skill that retrieves Data Lake Object (DLO) and Data Model Object (DMO) schema
 ## Usage
 
 **List all DLOs:**
-```
+```text
 "Show me all DLOs in afvibe org"
 "List Data Lake Objects in myorg"
 ```
 
 **Get specific DLO schema:**
-```
+```text
 "Get the schema for Employee__dll in afvibe"
 "What fields does the Employee__dll DLO have in myorg?"
 ```
 
 **List all DMOs:**
-```
+```text
 "Show me all DMOs in afvibe org"
 "List Data Model Objects in myorg"
 ```
 
 **Get specific DMO schema:**
-```
+```text
 "Get the schema for Individual__dlm in afvibe"
 "What fields does the Individual__dlm DMO have in myorg?"
 ```
@@ -116,7 +116,7 @@ python3 scripts/get_dmo_schema.py afvibe Individual__dlm
 ## Output Format
 
 ### DLO List
-```
+```text
 Found 5 DLOs in org 'afvibe':
 
 1. DataCustomCodeLogs__dll
@@ -131,7 +131,7 @@ Found 5 DLOs in org 'afvibe':
 ```
 
 ### DLO Schema
-```
+```text
 DLO: Employee__dll
 Label: Employee
 Category: Profile
@@ -148,7 +148,7 @@ Fields (9 total):
 ```
 
 ### DMO List
-```
+```text
 Found 10 DMOs in org 'afvibe':
 
 1. Individual__dlm
@@ -161,7 +161,7 @@ Found 10 DMOs in org 'afvibe':
 ```
 
 ### DMO Schema
-```
+```text
 DMO: Individual__dlm
 Label: Individual
 Category: Profile

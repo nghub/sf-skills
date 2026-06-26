@@ -1,11 +1,11 @@
 ---
-name: getting-datacloud-schema
+name: data360-schema-get
 description: "Retrieve Data Lake Object (DLO) and Data Model Object (DMO) schema information from Salesforce Data Cloud using REST APIs. Use this skill when you need to inspect DLO or DMO field definitions, data types, or metadata. Takes org alias and optional DLO/DMO name as parameters."
 metadata:
   version: "1.0"
 ---
 
-# getting-datacloud-schema Skill
+# data360-schema-get Skill
 
 
 ## Overview
@@ -42,7 +42,7 @@ sf org list
 ```
 
 Example output:
-```
+```text
 ┌────┬───────┬──────────────────────────┬────────────────────┬───────────┐
 │    │ Alias │ Username                 │ Org Id             │ Status    │
 ├────┼───────┼──────────────────────────┼────────────────────┼───────────┤
@@ -67,28 +67,28 @@ sf org login web --alias <org_alias>
 
 ### Step 3a: Execute DLO Schema Script
 
-The Python scripts are bundled with this skill. They live in the `scripts/` subdirectory of the same directory that contains this SKILL.md file. Use the absolute path to that directory — do NOT use `./scripts/` as that resolves relative to the current working directory, not the skill directory.
+The Python scripts are bundled with this skill in the `scripts/` subdirectory.
 
 **To list all DLOs:**
 ```bash
-python3 <skill_dir>/scripts/get_dlo_schema.py <org_alias>
+python3 ./scripts/get_dlo_schema.py <org_alias>
 ```
 
 **To get specific DLO schema:**
 ```bash
-python3 <skill_dir>/scripts/get_dlo_schema.py <org_alias> <dlo_name>
+python3 ./scripts/get_dlo_schema.py <org_alias> <dlo_name>
 ```
 
 ### Step 3b: Execute DMO Schema Script
 
 **To list all DMOs:**
 ```bash
-python3 <skill_dir>/scripts/get_dmo_schema.py <org_alias>
+python3 ./scripts/get_dmo_schema.py <org_alias>
 ```
 
 **To get specific DMO schema:**
 ```bash
-python3 <skill_dir>/scripts/get_dmo_schema.py <org_alias> <dmo_name>
+python3 ./scripts/get_dmo_schema.py <org_alias> <dmo_name>
 ```
 
 ### Step 4: Present Results
@@ -135,7 +135,7 @@ After displaying results, suggest relevant follow-up actions:
 ## API Endpoints Used
 
 ### List All DLOs
-```
+```text
 GET /services/data/v64.0/ssot/data-lake-objects
 ```
 
@@ -158,14 +158,14 @@ Response structure:
 ```
 
 ### Get DLO Schema
-```
+```text
 GET /services/data/v64.0/ssot/data-lake-objects/{dlo_name}
 ```
 
 Response structure (same as individual object in list response, but wrapped in paginated format).
 
 ### List All DMOs
-```
+```text
 GET /services/data/v64.0/ssot/data-model-objects
 ```
 
@@ -186,7 +186,7 @@ Response structure:
 ```
 
 ### Get DMO Schema
-```
+```text
 GET /services/data/v64.0/ssot/data-model-objects/{dmo_name}
 ```
 
@@ -219,29 +219,29 @@ Response structure (same as individual object in list response, but wrapped in p
 ## Example Usage
 
 **Example 1: List all DLOs**
-```
+```text
 User: "Show me all DLOs in afvibe org"
 
 Response:
 1. Run sf org list to discover connected org alias
 2. Authenticate to afvibe
-3. Run: python3 <skill_dir>/scripts/get_dlo_schema.py afvibe
+3. Run: python3 ./scripts/get_dlo_schema.py afvibe
 4. Display formatted list of DLOs
 ```
 
 **Example 2: Get specific DLO schema**
-```
+```text
 User: "Get the schema for Employee__dll in afvibe"
 
 Response:
 1. Run sf org list to discover connected org alias
 2. Authenticate to afvibe
-3. Run: python3 <skill_dir>/scripts/get_dlo_schema.py afvibe Employee__dll
+3. Run: python3 ./scripts/get_dlo_schema.py afvibe Employee__dll
 4. Display field schema with types and metadata
 ```
 
 **Example 3: Explore DLOs then get schema**
-```
+```text
 User: "What DLOs exist in myorg and show me the schema for the Employee one"
 
 Response:
@@ -253,29 +253,29 @@ Response:
 ```
 
 **Example 4: List all DMOs**
-```
+```text
 User: "Show me all DMOs in afvibe org"
 
 Response:
 1. Run sf org list to discover connected org alias
 2. Authenticate to afvibe
-3. Run: python3 <skill_dir>/scripts/get_dmo_schema.py afvibe
+3. Run: python3 ./scripts/get_dmo_schema.py afvibe
 4. Display formatted list of DMOs
 ```
 
 **Example 5: Get specific DMO schema**
-```
+```text
 User: "Get the schema for Individual__dlm in afvibe"
 
 Response:
 1. Run sf org list to discover connected org alias
 2. Authenticate to afvibe
-3. Run: python3 <skill_dir>/scripts/get_dmo_schema.py afvibe Individual__dlm
+3. Run: python3 ./scripts/get_dmo_schema.py afvibe Individual__dlm
 4. Display field schema with types and metadata
 ```
 
 **Example 6: Explore DMOs then get schema**
-```
+```text
 User: "What DMOs exist in myorg and show me the schema for the Individual one"
 
 Response:
@@ -289,7 +289,7 @@ Response:
 ## Output Format
 
 ### DLO List Output
-```
+```text
 Found 5 DLOs in org 'afvibe':
 
 1. DataCustomCodeLogs__dll
@@ -306,7 +306,7 @@ Found 5 DLOs in org 'afvibe':
 ```
 
 ### DLO Schema Output
-```
+```yaml
 DLO: Employee__dll
 Label: Employee
 Category: Profile
@@ -331,7 +331,7 @@ Next steps:
 ```
 
 ### DMO List Output
-```
+```text
 Found 10 DMOs in org 'afvibe':
 
 1. Individual__dlm
@@ -346,7 +346,7 @@ Found 10 DMOs in org 'afvibe':
 ```
 
 ### DMO Schema Output
-```
+```yaml
 DMO: Individual__dlm
 Label: Individual
 Category: Profile

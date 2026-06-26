@@ -1,4 +1,4 @@
-# developing-datacloud-code-extension Skill
+# data360-code-extension-generate Skill
 
 ## Overview
 
@@ -17,25 +17,25 @@ This skill helps you create Data Cloud Code Extensions through a complete workfl
 ## Usage
 
 **Initialize a project:**
-```
+```text
 "Create a new Data Cloud code extension project called employee-transform"
 "Initialize a code extension to transform employee data"
 ```
 
 **Test locally:**
-```
+```text
 "Run the code extension in my-transform directory against afvibe org"
 "Test the entrypoint.py file locally"
 ```
 
 **Scan for permissions:**
-```
+```text
 "Scan the entrypoint.py to generate config"
 "Update permissions in config.json"
 ```
 
 **Deploy:**
-```
+```text
 "Deploy Employee_Upper code extension to afvibe"
 "Deploy this transform with package-version 1.0.0"
 ```
@@ -135,7 +135,7 @@ print(f"Processed {len(output)} employee records")
 
 After `init`, you'll have:
 
-```
+```text
 my-transform/
 ├── payload/
 │   ├── entrypoint.py      # Your transformation code
@@ -173,7 +173,7 @@ client.write_to_dmo('EmployeeDMO', df, 'upsert')
 | Wrong Python version | Use pyenv to install 3.11.0 |
 | Org not connected | `sf org login web --alias <alias>` |
 | Config missing | Run scan command |
-| DLO not found | Check DLO name, use getting-datacloud-schema skill |
+| DLO not found | Check DLO name, use data360-schema-get skill |
 | Docker error | Start Docker Desktop |
 
 ## CPU Size Selection

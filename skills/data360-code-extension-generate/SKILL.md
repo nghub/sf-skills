@@ -1,11 +1,11 @@
 ---
-name: developing-datacloud-code-extension
+name: data360-code-extension-generate
 description: "Develop and deploy Data Cloud Code Extensions using SF CLI plugin. Use this skill when creating custom Python transformations for Data Cloud, deploying code extensions, or testing data transformations. Supports init, run, scan, and deploy operations."
 metadata:
   version: "1.0"
 ---
 
-# developing-datacloud-code-extension Skill
+# data360-code-extension-generate Skill
 
 ## Overview
 
@@ -79,7 +79,7 @@ sf data-code-extension function init --package-dir <directory>
 - `--package-dir, -p` - Directory path where the package will be created
 
 **What it creates:**
-```
+```text
 my-transform/              # Project root
 ├── payload/               # CRITICAL: This is what --package-dir must point to for deploy
 │   ├── entrypoint.py      # Main transformation code
@@ -172,7 +172,7 @@ cat payload/config.json
 
 #### Step 4b: Validate Each DLO Schema
 
-**Use the `getting-datacloud-schema` skill to verify DLOs exist and check field names.**
+**Use the `data360-schema-get` skill to verify DLOs exist and check field names.**
 
 For each DLO referenced in your code:
 
@@ -260,7 +260,7 @@ sf data-code-extension script deploy --target-org <org_alias> --name <name> --pa
 | `Cannot connect to Docker daemon` | Start Docker Desktop |
 | `No org found for alias` | `sf org login web --alias <org_alias>` |
 | `config.json not found` | `sf data-code-extension script scan --entrypoint ./payload/entrypoint.py` |
-| `DLO not found` | Verify DLO exists (use getting-datacloud-schema skill), check spelling and `__dll` suffix |
+| `DLO not found` | Verify DLO exists (use data360-schema-get skill), check spelling and `__dll` suffix |
 | `Permission denied writing` | Re-run scan, verify target DLO exists and is writable |
 | `Deploy fails - wrong directory` | Ensure `--package-dir` points to `payload/` directory, not project root |
 
@@ -285,9 +285,9 @@ sf data-code-extension script deploy --target-org <org_alias> --name <name> --pa
 
 ## Integration with Other Skills
 
-**Use with getting-datacloud-schema skill (CRITICAL for validation):**
+**Use with data360-schema-get skill (CRITICAL for validation):**
 
-The `getting-datacloud-schema` skill is **required** for validating DLOs before testing code extensions.
+The `data360-schema-get` skill is **required** for validating DLOs before testing code extensions.
 
 **Use with Datakit Workflow:**
 1. Create DLO via code extension

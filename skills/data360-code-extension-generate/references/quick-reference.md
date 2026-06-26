@@ -215,7 +215,7 @@ sf data-code-extension script scan --entrypoint ./payload/entrypoint.py
 
 ## File Structure
 
-```
+```text
 my-project/
 ├── payload/
 │   ├── entrypoint.py      # Main code
@@ -248,7 +248,7 @@ my-project/
 | Wrong Python version | Use pyenv to install 3.11.0 |
 | Org not connected | `sf org login web --alias <alias>` |
 | Config missing | Run scan command |
-| DLO not found | Check DLO name, use getting-datacloud-schema skill |
+| DLO not found | Check DLO name, use data360-schema-get skill |
 | Docker error | Start Docker Desktop |
 
 ## Deployment Checklist
