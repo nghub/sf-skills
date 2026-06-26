@@ -1,3 +1,12 @@
+# [1.26.0](https://github.com/forcedotcom/sf-skills/compare/1.25.0...1.26.0) (2026-06-26)
+
+
+### Features
+
+* release 4 new dx-devops skills @W-23195013@ ([77e5e14](https://github.com/forcedotcom/sf-skills/commit/77e5e1476c696c8c33910f21d43d3c555f755c9e))
+
+
+
 # [1.25.0](https://github.com/forcedotcom/sf-skills/compare/1.24.0...1.25.0) (2026-06-26)
 
 
